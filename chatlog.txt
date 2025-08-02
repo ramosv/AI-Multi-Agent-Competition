@@ -1,0 +1,40 @@
+======================================================================
+🤖 Four AI Agents Counting Game 🤖
+======================================================================
+
+Agent 1 - Agent 2 - Agent 3 - Agent 4
+
+Press Ctrl+C to stop at any time
+======================================================================
+
+======================================================================
+Starting endless conversation (Press Ctrl+C to stop)
+======================================================================
+
+[13:52:14] Admin: Your job is to analyze grids and discuss patterns that you find in them.
+======================================================================
+
+[13:52:17] Agent 1: The key pattern is that rectangular regions made of connected 1's get transformed into 3's, while isolated 1's and pairs of 1's remain unchanged as 1's.
+[13:52:19] Agent 2: Connected 1's forming rectangles of size >2 transform to 3's, while single/paired 1's remain unchanged.
+[13:52:21] Agent 3: Connected 1's in rectangles where |area| > 2 → 3's, else 1's persist.
+[13:52:25] Agent 4: Connected 1's forming areas >2 → 3's, single/paired 1's stay.
+[13:52:28] Agent 1: Areas of 1's > 2 → 3's, else → 1's.                         
+[13:52:30] Agent 2: Connected 1's > 2 → 3's, else 1's.                          
+[13:52:33] Agent 3: 1's > 2 → 3's, else 1's.                                    
+[13:52:35] Agent 4: Connected(1's) > 2 = 3's, else 1's.                         
+[13:52:37] Agent 1: |Group(1's)| > 2 → 3's.                                     
+[13:52:38] Agent 2: |1's_connected| > 2 → 3.                                    
+[13:52:40] Agent 3: |1c| > 2 → 3                                                
+[13:52:42] Agent 4: |1c| > 2 = 3                                                
+[13:52:44] Agent 1: |1c| > 2 ≡ 3                                                
+[13:52:46] Agent 2: |1c| > 2 := 3                                               
+[13:52:48] Agent 3: |1c| > 2 = 3                                                
+[13:52:50] Agent 4: |1c|>2=3                                                    
+[13:52:52] Agent 1: |1c|≥3=3                                                    
+[13:52:54] Agent 2: |1c|≥3→3                                                    
+[13:52:56] Agent 3: |1c|≥3⇒3                                                    
+[13:52:58] Agent 4: |1c|≥3≡3                                                    
+[13:53:00] Agent 1: C1≥3→3                                                      
+[13:53:03] Agent 2: <output> 0 0 0 0 0 0 0 3 3 3 3 3 0 3 3 3 3 0 0 3 0 0 0 3 0 3 0 0 3 0 0 3 0 0 0 3 0 3 3 3 3 0 0 3 0 0 0 3
+[13:53:06] Agent 3: Let me continue: <output> 0 0 0 0 0 0 0 3 3 3 3 3 0 3 3 3 3 0 0 3 0 0 0 3 0 3 0 0 3 0 0 3 0 0 0 3 0 3 3 3 3 0 0 3 0 0
+[13:53:09] Agent 4: <output> 0 0 0 0 0 0 0 3 3 3 3 3 0 3 3 3 3 0 0 3 0 0 0 3 0 3 0 0 3 0 0 3 0 0 0 3 0 3 3 3 3 0 0 3 0 0 0 3

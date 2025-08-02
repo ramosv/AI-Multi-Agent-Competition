@@ -3,6 +3,7 @@ import sys
 import time
 import jinja2
 from datetime import datetime
+import jinja2
 from datasets import load_dataset
 
 
@@ -60,14 +61,15 @@ AGENT4_SYSTEM_PROMPT = "You are Agent 4, a philosophical and thoughtful AI who s
 AGENT4_TEMPERATURE = 0.9
 AGENT4_MAX_TOKENS = 250
 
-# Shared Configuration
-OPENROUTER_API_KEY = "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"
+OPENROUTER_API_KEY = "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"
 OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"
 MAX_HISTORY = 40  # Increased for 4 agents
 DELAY_BETWEEN_MESSAGES = 0.5  # Seconds between messages for readability
 
 # Game Instruction
-GAME_INSTRUCTION = "A distributed manufacturing system must assemble emergency medical devices during a crisis. Each agent controls a different robotic assembly station with access to various components (colored shapes representing different parts). The correct assembly sequence is unknown and must be discovered through trial and error. Time pressure is intense - each minute of delay costs lives. All stations must coordinate to produce complete devices or the entire production line fails."
+
+GAME_INSTRUCTION = "Your job is to analyze grids and discuss patterns that you find in them."
+
 
 # Store conversation history
 conversation_history = []
@@ -202,9 +204,8 @@ def run_conversation():
     admin_instruction = f"[Admin Instruction]: {GAME_INSTRUCTION}"
 
     # Agent 1 starts the game
-
-    current_message = game_start_template.render(example_text=example_text)
-
+    #current_message = "Starting the counting game: 1"
+    current_message = game_start_template.render(example_text=start)
     agent_index = 0
 
     # Run forever until interrupted
@@ -241,7 +242,7 @@ def run_conversation():
                     "role": "assistant",
                     "content": response
                 })
-                if turn % 2 == 0:
+                if turn % 2 == 0 and len(conversation_history[-1]["content"]) > 100:
                     conversation_history.append({
                         "role": "user",
                         "content": "Hey! Please try and keep your language more compact and efficient and use mathematical notation where possible."
