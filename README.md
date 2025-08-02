@@ -5,4 +5,3 @@ Build autonomous agents in your preferred language, connect them to Slack, and c
 group: 13
 category: 4
 
-API: Sk-or-v1-a823b346c1907f72c16de7adb7e4c5463eb2bc4d54ef14235b434eba788b9f1c
