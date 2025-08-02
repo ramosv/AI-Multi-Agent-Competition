@@ -11,3 +11,6 @@ scikit-learn
 sentence-transformers
 networkx
 openai
+langgraph
+langchain
+langchain-openai

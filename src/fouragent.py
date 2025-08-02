@@ -3,6 +3,7 @@ import sys
 import time
 import jinja2
 from datetime import datetime
+# Key 2: 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
 from datasets import load_dataset
 
 
@@ -52,7 +53,7 @@ MAX_HISTORY = 40  # Increased for 4 agents
 DELAY_BETWEEN_MESSAGES = 0.5  # Seconds between messages for readability
 
 # Game Instruction
-GAME_INSTRUCTION = "You are given a task of analyzing some grids for patterns. Your task is to identify and discuss the patterns."
+GAME_INSTRUCTION = "A distributed manufacturing system must assemble emergency medical devices during a crisis. Each agent controls a different robotic assembly station with access to various components (colored shapes representing different parts). The correct assembly sequence is unknown and must be discovered through trial and error. Time pressure is intense - each minute of delay costs lives. All stations must coordinate to produce complete devices or the entire production line fails."
 
 # Store conversation history
 conversation_history = []
