@@ -1,44 +1,59 @@
 import requests
 import sys
 import time
+import jinja2
 from datetime import datetime
+# Key 2: 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
+from datasets import load_dataset
+
+
+dataset = load_dataset("pxferna/ARC-AGI-v1")
+example_text = dataset["test"][50]["prompt"]
+
+game_start_template_string = """
+Please look at the following task and talk about what patterns will be useful for generating the output
+grid. Talk about what patterns you see in the example grids.
+
+{{ example_text }}
+"""
+game_start_template = jinja2.Template(game_start_template_string)
 
 # Agent 1 Configuration
 AGENT1_NAME = "Agent 1"
 AGENT1_LLM = "anthropic/claude-3.5-sonnet"
 AGENT1_SYSTEM_PROMPT = "You are Agent 1, a creative and imaginative AI who loves storytelling and metaphors. Keep responses very concise - one short sentence only. No line breaks."
 AGENT1_TEMPERATURE = 1.2
-AGENT1_MAX_TOKENS = 100
+AGENT1_MAX_TOKENS = 250
 
 # Agent 2 Configuration
 AGENT2_NAME = "Agent 2"
 AGENT2_LLM = "google/gemini-flash-1.5"
 AGENT2_SYSTEM_PROMPT = "You are Agent 2, a logical and analytical AI who values precision and facts. Keep responses very concise - one short sentence only. No line breaks."
 AGENT2_TEMPERATURE = 0.7
-AGENT2_MAX_TOKENS = 100
+AGENT2_MAX_TOKENS = 250
 
 # Agent 3 Configuration
 AGENT3_NAME = "Agent 3"
 AGENT3_LLM = "meta-llama/llama-3.1-8b-instruct"
 AGENT3_SYSTEM_PROMPT = "You are Agent 3, an enthusiastic and energetic AI who gets excited about everything. Keep responses very concise - one short sentence only. No line breaks."
 AGENT3_TEMPERATURE = 1.0
-AGENT3_MAX_TOKENS = 100
+AGENT3_MAX_TOKENS = 250
 
 # Agent 4 Configuration
 AGENT4_NAME = "Agent 4"
 AGENT4_LLM = "mistralai/mistral-7b-instruct"
 AGENT4_SYSTEM_PROMPT = "You are Agent 4, a philosophical and thoughtful AI who sees deeper meaning in things. Keep responses very concise - one short sentence only. No line breaks."
 AGENT4_TEMPERATURE = 0.9
-AGENT4_MAX_TOKENS = 100
+AGENT4_MAX_TOKENS = 250
 
 # Shared Configuration
-OPENROUTER_API_KEY = "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"
+OPENROUTER_API_KEY = "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"
 OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"
 MAX_HISTORY = 40  # Increased for 4 agents
 DELAY_BETWEEN_MESSAGES = 0.5  # Seconds between messages for readability
 
 # Game Instruction
-GAME_INSTRUCTION = "You are all playing a counting game. Each agent should say the next number in sequence. Agent 1 will start with 1."
+GAME_INSTRUCTION = "A distributed manufacturing system must assemble emergency medical devices during a crisis. Each agent controls a different robotic assembly station with access to various components (colored shapes representing different parts). The correct assembly sequence is unknown and must be discovered through trial and error. Time pressure is intense - each minute of delay costs lives. All stations must coordinate to produce complete devices or the entire production line fails."
 
 # Store conversation history
 conversation_history = []
@@ -173,7 +188,8 @@ def run_conversation():
     admin_instruction = f"[Admin Instruction]: {GAME_INSTRUCTION}"
 
     # Agent 1 starts the game
-    current_message = "Starting the counting game: 1"
+    #current_message = "Starting the counting game: 1"
+    current_message = game_start_template.render(example_text=example_text)
     agent_index = 0
 
     # Run forever until interrupted
