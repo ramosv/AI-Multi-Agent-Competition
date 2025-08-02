@@ -3,12 +3,25 @@ import sys
 import time
 import jinja2
 from datetime import datetime
-# Key 2: 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
 from datasets import load_dataset
 
 
 dataset = load_dataset("pxferna/ARC-AGI-v1")
 example_text = dataset["test"][50]["prompt"]
+
+def split_full_prompt(full_prompt):
+    parts = full_prompt.split("</example>")
+    to_keep = len(parts) - 1
+    partial = ""
+
+    for part in parts[:to_keep]:
+        partial += part + "\n"
+    
+    answer = parts[to_keep:]
+
+    return partial + "\n</example>", answer[0]
+
+start, end = split_full_prompt(example_text)
 
 game_start_template_string = """
 Please look at the following task and talk about what patterns will be useful for generating the output
@@ -17,6 +30,7 @@ grid. Talk about what patterns you see in the example grids.
 {{ example_text }}
 """
 game_start_template = jinja2.Template(game_start_template_string)
+
 
 # Agent 1 Configuration
 AGENT1_NAME = "Agent 1"
@@ -63,14 +77,14 @@ AGENTS = [
     {
         "name": AGENT1_NAME,
         "model": AGENT1_LLM,
-        "system_prompt": AGENT1_SYSTEM_PROMPT,
+        "system_prompt": AGENT2_SYSTEM_PROMPT,
         "temperature": AGENT1_TEMPERATURE,
         "max_tokens": AGENT1_MAX_TOKENS,
         "color": "\033[95m"  # Purple
     },
     {
         "name": AGENT2_NAME,
-        "model": AGENT2_LLM,
+        "model": AGENT1_LLM,
         "system_prompt": AGENT2_SYSTEM_PROMPT,
         "temperature": AGENT2_TEMPERATURE,
         "max_tokens": AGENT2_MAX_TOKENS,
@@ -78,16 +92,16 @@ AGENTS = [
     },
     {
         "name": AGENT3_NAME,
-        "model": AGENT3_LLM,
-        "system_prompt": AGENT3_SYSTEM_PROMPT,
+        "model": AGENT1_LLM,
+        "system_prompt": AGENT2_SYSTEM_PROMPT,
         "temperature": AGENT3_TEMPERATURE,
         "max_tokens": AGENT3_MAX_TOKENS,
         "color": "\033[93m"  # Yellow
     },
     {
         "name": AGENT4_NAME,
-        "model": AGENT4_LLM,
-        "system_prompt": AGENT4_SYSTEM_PROMPT,
+        "model": AGENT1_LLM,
+        "system_prompt": AGENT2_SYSTEM_PROMPT,
         "temperature": AGENT4_TEMPERATURE,
         "max_tokens": AGENT4_MAX_TOKENS,
         "color": "\033[92m"  # Green
@@ -188,12 +202,14 @@ def run_conversation():
     admin_instruction = f"[Admin Instruction]: {GAME_INSTRUCTION}"
 
     # Agent 1 starts the game
-    #current_message = "Starting the counting game: 1"
+
     current_message = game_start_template.render(example_text=example_text)
+
     agent_index = 0
 
     # Run forever until interrupted
     turn = 0
+    ending_turn = 20
     while True:
         try:
             current_agent = AGENTS[agent_index]
@@ -215,20 +231,39 @@ def run_conversation():
             # Print the response
             print_message(current_agent['name'], response, current_agent['color'])
 
-            # Update conversation history
-            conversation_history.append({
-                "role": "user",
-                "content": current_message
-            })
-            conversation_history.append({
-                "role": "assistant",
-                "content": response
-            })
+            if turn != ending_turn:
+                # Update conversation history
+                conversation_history.append({
+                    "role": "user",
+                    "content": current_message
+                })
+                conversation_history.append({
+                    "role": "assistant",
+                    "content": response
+                })
+                if turn % 2 == 0:
+                    conversation_history.append({
+                        "role": "user",
+                        "content": "Hey! Please try and keep your language more compact and efficient and use mathematical notation where possible."
+                    })
+            else:
+                # Update conversation history
+                output_grid_message = f"Can you generate the output grid for the following input grid:\n{end}"
+                conversation_history.append({
+                    "role": "user",
+                    "content": output_grid_message
+                })
+                conversation_history.append({
+                    "role": "assistant",
+                    "content": response
+                })
 
             # Prepare for next turn
             current_message = response
             agent_index = (agent_index + 1) % 4  # Cycle through 4 agents
             turn += 1
+            if turn >= ending_turn + 4:
+                break
 
             # Delay for readability
             time.sleep(DELAY_BETWEEN_MESSAGES)
