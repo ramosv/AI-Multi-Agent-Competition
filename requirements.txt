@@ -1,0 +1,13 @@
+slack-bolt
+slack-sdk 
+httpx 
+anyio 
+uvicorn 
+fastapi
+pydantic 
+numpy
+pandas 
+scikit-learn
+sentence-transformers
+networkx
+openai
